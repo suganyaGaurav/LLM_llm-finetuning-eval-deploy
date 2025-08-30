@@ -1,0 +1,62 @@
+## 🚀 Workflow / Pipeline
+
+**Step 1: Data Preparation**  
+- Download IMDB dataset (50K reviews).  
+- Clean and preprocess text.  
+- Save as `imdb_clean.csv`.  
+
+**Step 2: Fine-Tuning**  
+- Use base models (`DistilBERT`, `MiniLM`).  
+- Apply **LoRA** (parameter-efficient fine-tuning).  
+
+**Step 3: Evaluation**  
+- Metrics: Accuracy, F1, Precision, Recall, Perplexity.  
+- Compare base vs fine-tuned models.  
+
+**Step 4: Optimization**  
+- LoRA vs Full Fine-tuning.  
+- Quantization (int8, int4).  
+- Distillation (teacher → student).  
+- Memory & latency benchmarking.  
+
+**Step 5: Testing**  
+- Unit tests for preprocessing, tokenizer, embeddings.  
+- Integration tests for model + RAG pipeline.  
+- Stress tests for latency & throughput.  
+
+**Step 6: Deployment**  
+- Serve model via **Flask/FastAPI API**.  
+- Containerize with Docker.  
+- Deploy to Hugging Face Spaces / AWS.  
+
+---
+
+## 📊 Results (Placeholder Table)
+
+| Model Variant       | Dataset Size | Accuracy | F1   | Latency (ms) | Memory (GB) |
+|---------------------|--------------|----------|------|--------------|-------------|
+| DistilBERT (Base)   | 50K          | 86%      | 0.85 | 120          | 6.0         |
+| DistilBERT + LoRA   | 50K          | 89%      | 0.88 | 140          | 4.2         |
+| MiniLM + Quantized  | 50K          | 88%      | 0.87 | 80           | 2.0         |
+| Distilled MiniLM    | 50K          | 87%      | 0.86 | 60           | 1.5         |
+
+---
+
+## 🛠️ Technologies Used
+- **Python** (Google Colab, Jupyter Notebooks)  
+- **NLP Models:** Hugging Face Transformers (DistilBERT, MiniLM)  
+- **Fine-Tuning:** LoRA (PEFT), PyTorch  
+- **Evaluation:** Scikit-learn (Accuracy, F1), ROUGE, BLEU  
+- **Optimization:** Quantization (BitsAndBytes), Distillation  
+- **Deployment:** Flask/FastAPI, Docker, Hugging Face Spaces / AWS  
+
+---
+
+## 📦 Installation
+```bash
+# Clone repo
+git clone https://github.com/your-username/llm-finetuning-eval-deploy.git
+cd llm-finetuning-eval-deploy
+
+# Install dependencies
+pip install -r requirements.txt

@@ -1,62 +1,64 @@
-## 🚀 Workflow / Pipeline
-
-**Step 1: Data Preparation**  
-- Download IMDB dataset (50K reviews).  
-- Clean and preprocess text.  
-- Save as `imdb_clean.csv`.  
-
-**Step 2: Fine-Tuning**  
-- Use base models (`DistilBERT`, `MiniLM`).  
-- Apply **LoRA** (parameter-efficient fine-tuning).  
-
-**Step 3: Evaluation**  
-- Metrics: Accuracy, F1, Precision, Recall, Perplexity.  
-- Compare base vs fine-tuned models.  
-
-**Step 4: Optimization**  
-- LoRA vs Full Fine-tuning.  
-- Quantization (int8, int4).  
-- Distillation (teacher → student).  
-- Memory & latency benchmarking.  
-
-**Step 5: Testing**  
-- Unit tests for preprocessing, tokenizer, embeddings.  
-- Integration tests for model + RAG pipeline.  
-- Stress tests for latency & throughput.  
-
-**Step 6: Deployment**  
-- Serve model via **Flask/FastAPI API**.  
-- Containerize with Docker.  
-- Deploy to Hugging Face Spaces / AWS.  
 
 ---
 
-## 📊 Results (Placeholder Table)
+# 📄 INFERENCE.md (Project Report & Inference)
 
-| Model Variant       | Dataset Size | Accuracy | F1   | Latency (ms) | Memory (GB) |
-|---------------------|--------------|----------|------|--------------|-------------|
-| DistilBERT (Base)   | 50K          | 86%      | 0.85 | 120          | 6.0         |
-| DistilBERT + LoRA   | 50K          | 89%      | 0.88 | 140          | 4.2         |
-| MiniLM + Quantized  | 50K          | 88%      | 0.87 | 80           | 2.0         |
-| Distilled MiniLM    | 50K          | 87%      | 0.86 | 60           | 1.5         |
+```markdown
+# IMDB Sentiment Model — Inference & Project Report
+
+This document explains **what was done**, **what we achieved**, and **how inference works** in this project.
 
 ---
 
-## 🛠️ Technologies Used
-- **Python** (Google Colab, Jupyter Notebooks)  
-- **NLP Models:** Hugging Face Transformers (DistilBERT, MiniLM)  
-- **Fine-Tuning:** LoRA (PEFT), PyTorch  
-- **Evaluation:** Scikit-learn (Accuracy, F1), ROUGE, BLEU  
-- **Optimization:** Quantization (BitsAndBytes), Distillation  
-- **Deployment:** Flask/FastAPI, Docker, Hugging Face Spaces / AWS  
+## 🌱 What we did
+1. **Environment setup**: Installed Hugging Face `transformers`, `datasets`, `evaluate`, etc.
+2. **Dataset preparation**: Cleaned IMDB reviews (CSV: `review`, `sentiment`).
+3. **Preprocessing**: Tokenized reviews into input IDs with `distilbert-base-uncased`.
+4. **Training**: Fine-tuned DistilBERT with Hugging Face `Trainer`.
+   - 2000 train / 1000 test (subset) for smoke test.
+   - 1 epoch, learning rate `2e-5`, batch size `8`.
+5. **Evaluation**:
+   - Accuracy ~83.6%
+   - F1 (weighted) ~83.5%
+   - Confusion matrix: good balance, slightly more false positives.
+6. **Inference**:
+   - Built a pipeline for sentiment classification.
+   - Mapped `LABEL_0 → Negative`, `LABEL_1 → Positive`.
+   - Logged every inference to `predictions_log.csv`.
+7. **Governance**:
+   - Metadata (`metadata.json`) with training arguments.
+   - Eval reports stored (`eval_report.txt`).
+   - Prediction logs (`predictions_log.csv`) for audit.
 
 ---
 
-## 📦 Installation
-```bash
-# Clone repo
-git clone https://github.com/your-username/llm-finetuning-eval-deploy.git
-cd llm-finetuning-eval-deploy
+## 🎯 What we achieved
+- A functional **sentiment classifier** with >83% accuracy.
+- End-to-end workflow: dataset → training → evaluation → inference → logging.
+- Governance and reproducibility: every run is tracked and auditable.
+- Ready-to-scale pipeline (can handle larger datasets and more epochs).
 
-# Install dependencies
-pip install -r requirements.txt
+---
+
+## ⚡ Inference
+
+### Client View (simple, non-technical)
+- Input: a movie review text.  
+- Output: **“Positive”** or **“Negative”** with a confidence score.  
+- Example:
+  - *“I really loved this movie, the acting was fantastic!”* → Positive (0.93)
+  - *“This film was boring and a complete waste of time.”* → Negative (0.91)
+
+### Technical View
+- Inference pipeline uses Hugging Face `pipeline("text-classification", model=..., tokenizer=..., top_k=None)`.
+- Model = DistilBERT with 2-class classification head (fine-tuned).
+- Predictions are logits → softmax → label probabilities.
+- Predictions saved with timestamp and confidence into `predictions_log.csv`.
+
+---
+
+## 🔮 Next Steps
+- Full training (25k train / 25k test, 2–3 epochs).
+- Hyperparameter tuning (LR, batch size, max_length).
+- Error analysis (false positives/negatives inspection).
+- Optional: wandb integration, Gradio demo.
